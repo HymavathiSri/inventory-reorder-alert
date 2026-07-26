@@ -8,7 +8,7 @@ from pathlib import Path
 CRITICAL_RATIO = 0.25   # below 25% of threshold = "Critical"
 TARGET_STOCK_MULTIPLIER = 1.5  # reorder up to 150% of threshold ("healthy" level)
 
-# Step 1: # Load inventory data from the CSV file
+# Step 1: Load inventory data from the CSV file
 def load_stock_data(filepath):
     """
     Reads the stock CSV and returns a list of dicts, one per row.
