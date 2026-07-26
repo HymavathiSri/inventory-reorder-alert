@@ -1,0 +1,14 @@
+sku,item_name,quantity,threshold
+SKU-2087,Packing Tape,240,50
+SKU-3311,Steel Bolts (M6),42,40
+SKU-4456,Cardboard Boxes (L),9,60
+SKU-5502,Bubble Wrap Roll,130,30
+SKU-6120,Shipping Labels,0,100
+SKU-7788,Zip Ties (Small),15,20
+SKU-8890,Foam Padding Sheets,,25
+SKU-9012,Pallet Wrap,75,75
+SKU-1123,Duct Tape,3,20
+SKU-2299,Warehouse Gloves,-5,15
+SKU-3400,Corrugated Inserts,220,80
+SKU-4501,Staple Gun Refills,8,,
+SKU-5600,Moving Blankets,60,60
