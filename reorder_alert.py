@@ -1,35 +1,14 @@
-"""
-Inventory Reorder Alert System
-================================
-Scans a warehouse stock CSV, flags items that are low or critical,
-suggests reorder quantities, and produces both a console report and
-a restock_report.csv file. Also prints a simulated restock-alert email.
-
-Usage:
-    python reorder_alert.py [path_to_stock_csv]
-
-If no path is given, it defaults to "inventory_stock.csv" in the
-same folder.
-"""
-
+# Inventory Reorder Alert System
 import csv
 import sys
 from datetime import datetime
 from pathlib import Path
 
-
-# ---------------------------------------------------------------------------
-# Configuration
-# ---------------------------------------------------------------------------
-
+# Now Configuration Setting
 CRITICAL_RATIO = 0.25   # below 25% of threshold = "Critical"
 TARGET_STOCK_MULTIPLIER = 1.5  # reorder up to 150% of threshold ("healthy" level)
 
-
-# ---------------------------------------------------------------------------
-# Step 1: Load stock data from CSV into a list of dictionaries
-# ---------------------------------------------------------------------------
-
+# Step 1: # Load inventory data from the CSV file
 def load_stock_data(filepath):
     """
     Reads the stock CSV and returns a list of dicts, one per row.
@@ -45,11 +24,7 @@ def load_stock_data(filepath):
             rows.append(raw_row)
     return rows
 
-
-# ---------------------------------------------------------------------------
-# Step 2: Clean + validate each row (this is where edge cases are handled)
-# ---------------------------------------------------------------------------
-
+# Step 2: Validate and clean inventory records
 def parse_item(raw_row):
     """
     Attempts to turn a raw CSV row into a clean item dict:
@@ -134,11 +109,7 @@ def clean_stock_data(raw_rows):
             warnings.append(note)
     return good_items, warnings
 
-
-# ---------------------------------------------------------------------------
 # Step 3: Conditional logic -- classify stock status + reorder suggestion
-# ---------------------------------------------------------------------------
-
 def classify_item(item):
     """
     Adds 'status' and 'suggested_reorder_qty' to an item dict based on
@@ -174,11 +145,7 @@ def scan_inventory(items):
     """Runs classify_item over every item; returns the same list, enriched."""
     return [classify_item(item) for item in items]
 
-
-# ---------------------------------------------------------------------------
 # Step 4: Reporting
-# ---------------------------------------------------------------------------
-
 def print_console_report(items, warnings):
     flagged = [i for i in items if i["status"] != "In Stock"]
     critical = [i for i in flagged if i["status"] == "Critical"]
@@ -292,10 +259,7 @@ def print_email_alert(subject, body):
     print("=" * 60 + "\n")
 
 
-# ---------------------------------------------------------------------------
 # Main
-# ---------------------------------------------------------------------------
-
 def main():
     csv_path = Path(sys.argv[1]) if len(sys.argv) > 1 else Path(__file__).parent / "inventory_stock.csv"
 
@@ -319,21 +283,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-
-# ---------------------------------------------------------------------------
-# Reflection
-# ---------------------------------------------------------------------------
-# What I'd improve with more time:
-#   1. Scheduling: wire this into cron / Windows Task Scheduler (or a cloud
-#      function on a timer) so it runs every morning without a human
-#      triggering it, and only emails when something is actually flagged.
-#   2. Supplier integration: instead of just suggesting a reorder quantity,
-#      call a supplier API (or generate a PO draft) for critical items so
-#      the loop from "detected" to "ordered" closes automatically.
-#   3. Historical trend tracking: log each day's scan to a small database
-#      (SQLite would be enough to start) so we can see consumption rate per
-#      SKU and predict *when* an item will hit threshold, not just whether
-#      it already has -- that turns this from reactive to predictive.
-#   4. Real email delivery + Slack/Teams webhook as a faster-to-notice
-#      alternative to email for genuinely critical items.
